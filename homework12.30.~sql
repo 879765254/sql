@@ -1,0 +1,133 @@
+--1.按照每页显示5条记录，分别查询工资最高的第1页，第2页，第3页信息，要求显示员工姓名、入职日期、部门名称、工资。
+select *
+from(select rownum rn,a.*
+     from (select e.ename,e.hiredate,d.dname,e.sal
+          from emp e,dept d
+          where e.deptno=d.deptno
+          order by e.sal) a)
+where rn<=5 and rn>0; 
+
+
+select *
+from (select rownum rn,a.*
+      from (select e.ename,e.hiredate,d.dname,e.sal
+           from emp e,dept d
+           where e.deptno=d.deptno
+           order by e.sal) a
+      where rownum<=10)
+where rn>5;
+--3.使用联合运算，查询每个部门的部门编号，部门人数，没有人数的部门显示0。
+--思路：员工表要分组，这样才能统计各部门人数，  部门表也要查，这样没有人的部门才能出来
+select deptno,count(1) 部门人数 
+from emp 
+where deptno is not null
+group by deptno
+union
+select deptno,nvl(to_number(null),0) 部门人数
+from dept
+--1.分别使用联合运算及完全联合运算完成，按照时间升序顺序，查询员工7839的工作岗位列表。
+select hiredate,empno,job
+from emp
+where empno=7839
+union
+select begindate,empno,job
+from emp_jobhistory
+where empno=7839;
+
+select hiredate,empno,job
+from emp
+where empno=7839
+union all
+select begindate,empno,job
+from emp_jobhistory
+where empno=7839;
+
+--2.使用多表连接，查询每个部门的部门编号，部门人数，没有人数的部门显示0。
+select deptno,count(deptno)
+from emp
+where deptno is not null
+group by deptno
+union
+select deptno,nvl(null,0)
+from dept;
+
+--4.使用联合运算，查询10号部门及20号部门的员工姓名，部门编号。
+select ename,deptno
+from emp
+where deptno=10
+union
+select ename,deptno
+from emp
+where deptno=20;
+--5. 使用集合运算，输出如下效果？
+select deptno 部门,to_char(null)工作地点,ename 员工姓名,hiredate 入职日期
+from emp
+union
+select deptno 部门，loc,to_char(null),to_date(null)
+from dept;
+
+--1.用集合运算，列出不包含job为SALESMAN 的部门的部门号。
+select distinct deptno
+from emp
+
+minus
+select deptno
+from emp
+where job='SALESMAN';
+
+--2.写一个联合查询，列出下面的信息：EMP表中所有雇员的名字和部门编号,不管他们是否属于任何部门。DEPT表中的所有部门编号和部门名称，不管他们是否有员工。
+select ename 名字,deptno 部门编号,to_char(null) 部门名称
+from emp
+union
+select to_char(null),deptno 部门编号,dname 部门编号
+from dept;
+
+
+--3.用集合运算查询出职位为SALESMAN和部门编号为10的人员编号、姓名、职位，不排除重复结果。
+select empno 人员编号,ename 姓名,job 职位
+from emp
+where job='SALESMAN'
+union
+select empno 人员编号,ename 姓名,job 职位
+from emp
+where deptno=10;
+--4.用集合查询出部门为10和20的所有人员编号、姓名、所在部门名称。
+select e.empno,e.ename,d.dname
+from emp e,dept d
+where e.deptno=d.deptno and e.deptno=10
+union
+select e.empno,e.ename,d.dname
+from emp e,dept d
+where e.deptno=d.deptno and e.deptno=20;
+--1.列出至少有一个雇员的所有部门名称。
+select dname
+from dept d
+where exists(
+select '1'
+from emp
+where deptno=d.deptno);
+--2.列出一个雇员都没有的所有部门名称。
+select dname
+from dept d
+where not exists(
+select '1'
+from emp
+where deptno=d.deptno);
+--1.查询薪水多于他所在部门平均薪水的雇员名字，部门号。
+select ename,deptno
+from emp e
+where sal>(select avg(sal)
+                  from emp
+                  where deptno=e.deptno);
+--2.查询员工姓名和直接上级的名字。
+select ename,(select ename from emp where empno=e.mgr)
+from emp e; 
+--3.查询每个部门工资最高的员工姓名，工资。
+select ename,sal
+from emp e
+where sal=(select max(sal)
+                  from emp
+                  where deptno=e.deptno)
+
+--4.查询每个部门工资前两名高的员工姓名，工资。
+
