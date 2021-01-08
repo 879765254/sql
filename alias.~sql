@@ -1,0 +1,9 @@
+select empno, ename, job, mgr, hiredate, sal, comm, deptno from emp;
+--select sal*1.2
+--from emp;
+--select sal*6+sal*6*1.2 收入
+--from emp;
+select ename||'的第一年总收入为'||sal*6*2.2 年收入
+from emp;
+select distinct job
+from emp;

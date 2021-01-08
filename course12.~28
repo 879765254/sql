@@ -1,0 +1,26 @@
+--内连接
+select e.*,d.*
+from emp e,dept d
+where e.deptno=d.deptno;
+select e.*,d.*
+from emp e inner join dept d
+on e.deptno=d.deptno;
+--左外连接
+select e.*,d.*
+from emp e,dept d
+where e.deptno=d.deptno(+);
+select e.*,d.*
+from emp e left join dept d
+on e.deptno=d.deptno;
+--右外连接
+select e.*,d.*
+from emp e,dept d
+where e.deptno(+)=d.deptno;
+select e.*,d.*
+from emp e right join dept d
+on e.deptno=d.deptno;
+--全外连接
+select e.*,d.*
+from emp e full join dept d
+on e.deptno=d.deptno;
+

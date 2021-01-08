@@ -1,0 +1,5 @@
+--1.写一个查询,用首字母大写，其它字母小写显示雇员的 ename，显示名字的长度，并给每列一个适当的标签，条件是满足所有雇员名字的开始字母是J、A 或 M 的雇员，并对查询结果按雇员的ename升序排序。（提示：使用initcap、length、substr）
+select initcap(ename),length(ename)
+from emp
+where substr(ename,1,1)='J' or substr(ename,1,1)='A' or substr(ename,1,1)='M'
+order by ename;
